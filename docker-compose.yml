@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: studygenie
+      POSTGRES_USER: studygenie_user
+      POSTGRES_PASSWORD: studygenie_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - studygenie-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql://studygenie_user:studygenie_pass@postgres:5432/studygenie
+      JWT_SECRET: your-jwt-secret-key-change-in-production
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      HF_API_KEY: ${HF_API_KEY:-}
+      NODE_ENV: development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    networks:
+      - studygenie-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:5000
+    networks:
+      - studygenie-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+
+networks:
+  studygenie-network:
+    driver: bridge
