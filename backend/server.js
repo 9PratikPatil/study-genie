@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const multer = require('multer');
 const axios = require('axios');
+const puterClient = require('./puterClient');
 require('dotenv').config();
 
 const app = express();
@@ -37,15 +38,17 @@ const upload = multer({
 });
 
 // Check API keys and log mode
-const hasOpenAI = !!process.env.OPENAI_API_KEY;
 const hasHuggingFace = !!process.env.HF_API_KEY;
 
-if (!hasOpenAI) {
-  console.log('⚠️  OPENAI_API_KEY not found - running in mock mode for text AI');
-}
 if (!hasHuggingFace) {
   console.log('⚠️  HF_API_KEY not found - running in mock mode for image analysis');
 }
+
+// Initialize Puter.js
+console.log('🚀 Initializing Puter.js for AI capabilities...');
+puterClient.initialize().catch(err => {
+  console.error('Failed to initialize Puter.js:', err);
+});
 
 // JWT middleware
 const authenticateToken = (req, res, next) => {
@@ -182,42 +185,24 @@ app.post('/ai/study-style', authenticateToken, async (req, res) => {
     const { answers } = req.body;
     let response;
 
-    if (hasOpenAI) {
-      // Real OpenAI implementation
-      const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: 'gpt-3.5-turbo',
-        messages: [{
-          role: 'system',
-          content: 'You are a learning style analyzer. Based on quiz answers, return a JSON object with: primary (string), secondary (string), probabilities (object with percentages), tips (array of strings).'
-        }, {
-          role: 'user',
-          content: `Analyze these quiz answers and determine learning style: ${JSON.stringify(answers)}`
-        }],
-        temperature: 0.7
-      }, {
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      response = JSON.parse(openaiResponse.data.choices[0].message.content);
+    if (puterClient.isAvailable()) {
+      // Use Puter.js for AI analysis
+      const prompt = `You are an educational AI that analyzes study style preferences. Based on the user's responses to a 5-point Likert scale questionnaire (1=Strongly Disagree, 5=Strongly Agree), provide a detailed analysis of their learning style, strengths, and personalized study recommendations. Return your response as a JSON object with fields: style (main learning style), strengths (array of strengths), recommendations (array of specific study tips), and summary (brief overview).\n\nPlease analyze these study style responses: ${JSON.stringify(answers)}`;
+      
+      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+      response = JSON.parse(puterResponse.message.content);
     } else {
-      // Mock response
+      // Mock response when Puter.js is not available
       response = {
-        primary: 'Visual',
-        secondary: 'Kinesthetic',
-        probabilities: {
-          visual: 45,
-          auditory: 25,
-          kinesthetic: 30
-        },
-        tips: [
-          'Use diagrams and mind maps for complex topics',
-          'Color-code your notes and materials',
-          'Take breaks to move around while studying',
-          'Practice with hands-on activities when possible'
-        ]
+        style: 'Visual-Kinesthetic Learner',
+        strengths: ['Visual processing', 'Hands-on learning', 'Pattern recognition'],
+        recommendations: [
+          'Use mind maps and diagrams for complex topics',
+          'Take frequent breaks during study sessions',
+          'Practice with real-world examples and case studies',
+          'Use color-coding for different subjects or topics'
+        ],
+        summary: 'You learn best through visual aids and hands-on activities. Incorporate diagrams, charts, and practical exercises into your study routine.'
       };
     }
 
@@ -234,25 +219,11 @@ app.post('/ai/stress', authenticateToken, async (req, res) => {
     const { lifestyle } = req.body;
     let response;
 
-    if (hasOpenAI) {
-      const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: 'gpt-3.5-turbo',
-        messages: [{
-          role: 'system',
-          content: 'You are a stress level analyzer. Return JSON with: level (Low/Medium/High), drivers (array of strings), suggestions (array of strings).'
-        }, {
-          role: 'user',
-          content: `Analyze stress level from lifestyle data: ${JSON.stringify(lifestyle)}`
-        }],
-        temperature: 0.7
-      }, {
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      response = JSON.parse(openaiResponse.data.choices[0].message.content);
+    if (puterClient.isAvailable()) {
+      const prompt = `You are a stress level analyzer. Return JSON with: level (Low/Medium/High), drivers (array of strings), suggestions (array of strings).\n\nAnalyze stress level from lifestyle data: ${JSON.stringify(lifestyle)}`;
+      
+      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+      response = JSON.parse(puterResponse.message.content);
     } else {
       response = {
         level: 'Medium',
@@ -279,25 +250,11 @@ app.post('/ai/genieguide', authenticateToken, async (req, res) => {
     const { courseInfo, weeklyHours } = req.body;
     let response;
 
-    if (hasOpenAI) {
-      const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: 'gpt-3.5-turbo',
-        messages: [{
-          role: 'system',
-          content: 'Create a study roadmap. Return JSON with: roadmap (array of week objects with week number, topics, activities), mindmap (string describing connections between topics).'
-        }, {
-          role: 'user',
-          content: `Create roadmap for: ${courseInfo}, ${weeklyHours} hours/week`
-        }],
-        temperature: 0.7
-      }, {
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      response = JSON.parse(openaiResponse.data.choices[0].message.content);
+    if (puterClient.isAvailable()) {
+      const prompt = `Create a study roadmap. Return JSON with: roadmap (array of week objects with week number, topics, activities), mindmap (string describing connections between topics).\n\nCreate roadmap for: ${courseInfo}, ${weeklyHours} hours/week`;
+      
+      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+      response = JSON.parse(puterResponse.message.content);
     } else {
       response = {
         roadmap: [
@@ -324,29 +281,15 @@ app.post('/ai/chat', authenticateToken, async (req, res) => {
     const historyContext = await getUserHistoryContext(req.user.userId);
     let response;
 
-    if (hasOpenAI) {
+    if (puterClient.isAvailable()) {
       const contextMessage = historyContext.length > 0 
         ? `User's recent activity: ${JSON.stringify(historyContext.slice(0, 3))}`
         : 'No recent activity available.';
 
-      const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: 'gpt-3.5-turbo',
-        messages: [{
-          role: 'system',
-          content: `You are NOVA, a helpful study assistant. Provide educational support and study guidance. ${contextMessage}`
-        }, {
-          role: 'user',
-          content: message
-        }],
-        temperature: 0.7
-      }, {
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      response = { answer: openaiResponse.data.choices[0].message.content };
+      const prompt = `You are NOVA, a helpful study assistant. Provide educational support and study guidance. ${contextMessage}\n\nUser question: ${message}`;
+      
+      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+      response = { answer: puterResponse.message.content };
     } else {
       response = {
         answer: `Thanks for your question about "${message}". As your study assistant NOVA, I'd recommend breaking this topic down into smaller parts and creating a study plan. Consider using active recall techniques and spaced repetition for better retention.`
@@ -366,26 +309,12 @@ app.post('/ai/support', authenticateToken, async (req, res) => {
     const { message } = req.body;
     let response;
 
-    if (hasOpenAI) {
-      const openaiResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
-        model: 'gpt-3.5-turbo',
-        messages: [{
-          role: 'system',
-          content: 'You are a supportive educational coach. Provide empathetic, encouraging responses. Always include a disclaimer that this is educational support, not medical care.'
-        }, {
-          role: 'user',
-          content: message
-        }],
-        temperature: 0.8
-      }, {
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
+    if (puterClient.isAvailable()) {
+      const prompt = `You are a supportive educational coach. Provide empathetic, encouraging responses. Always include a disclaimer that this is educational support, not medical care.\n\nUser message: ${message}`;
+      
+      const puterResponse = await puterClient.chat(prompt, { temperature: 0.8 });
       response = {
-        response: openaiResponse.data.choices[0].message.content,
+        response: puterResponse.message.content,
         disclaimer: 'This is a supportive educational tool, not medical care. If you are in crisis, please seek local emergency help or contact a mental health professional.'
       };
     } else {
@@ -453,6 +382,6 @@ app.get('/health', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 StudyGenie Backend running on port ${PORT}`);
   console.log(`📊 Database: ${process.env.DATABASE_URL ? 'Connected' : 'Not configured'}`);
-  console.log(`🤖 OpenAI: ${hasOpenAI ? 'Enabled' : 'Mock mode'}`);
+  console.log(`🤖 Puter.js: ${puterClient.isAvailable() ? 'Enabled' : 'Initializing...'}`);
   console.log(`🖼️  HuggingFace: ${hasHuggingFace ? 'Enabled' : 'Mock mode'}`);
 });
