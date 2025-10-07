@@ -178,14 +178,21 @@ app.post('/ai/study-style', authenticateToken, async (req, res) => {
     const { answers } = req.body;
     let response;
 
-    if (puterClient.isAvailable()) {
-      // Use Puter.js for AI analysis
-      const prompt = `You are an educational AI that analyzes study style preferences. Based on the user's responses to a 5-point Likert scale questionnaire (1=Strongly Disagree, 5=Strongly Agree), provide a detailed analysis of their learning style, strengths, and personalized study recommendations. Return your response as a JSON object with fields: style (main learning style), strengths (array of strengths), recommendations (array of specific study tips), and summary (brief overview).\n\nPlease analyze these study style responses: ${JSON.stringify(answers)}`;
-      
-      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
-      response = JSON.parse(puterResponse.message.content);
-    } else {
-      // Mock response when Puter.js is not available
+    // Try external API first, fallback to mock on failure
+    try {
+      if (puterClient.isAvailable()) {
+        console.log('🤖 Attempting Puter.js API call for study-style analysis...');
+        const prompt = `You are an educational AI that analyzes study style preferences. Based on the user's responses to a 5-point Likert scale questionnaire (1=Strongly Disagree, 5=Strongly Agree), provide a detailed analysis of their learning style, strengths, and personalized study recommendations. Return your response as a JSON object with fields: style (main learning style), strengths (array of strengths), recommendations (array of specific study tips), and summary (brief overview).\n\nPlease analyze these study style responses: ${JSON.stringify(answers)}`;
+        
+        const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+        response = JSON.parse(puterResponse.message.content);
+        console.log('✅ Puter.js API call successful');
+      } else {
+        throw new Error('Puter.js not available');
+      }
+    } catch (apiError) {
+      console.log('⚠️ External API failed, using mock response:', apiError.message);
+      // Mock response when external API fails
       response = {
         style: 'Visual-Kinesthetic Learner',
         strengths: ['Visual processing', 'Hands-on learning', 'Pattern recognition'],
@@ -212,12 +219,21 @@ app.post('/ai/stress', authenticateToken, async (req, res) => {
     const { lifestyle } = req.body;
     let response;
 
-    if (puterClient.isAvailable()) {
-      const prompt = `You are a stress level analyzer. Return JSON with: level (Low/Medium/High), drivers (array of strings), suggestions (array of strings).\n\nAnalyze stress level from lifestyle data: ${JSON.stringify(lifestyle)}`;
-      
-      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
-      response = JSON.parse(puterResponse.message.content);
-    } else {
+    // Try external API first, fallback to mock on failure
+    try {
+      if (puterClient.isAvailable()) {
+        console.log('🤖 Attempting Puter.js API call for stress analysis...');
+        const prompt = `You are a stress level analyzer. Return JSON with: level (Low/Medium/High), drivers (array of strings), suggestions (array of strings).\n\nAnalyze stress level from lifestyle data: ${JSON.stringify(lifestyle)}`;
+        
+        const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+        response = JSON.parse(puterResponse.message.content);
+        console.log('✅ Puter.js API call successful');
+      } else {
+        throw new Error('Puter.js not available');
+      }
+    } catch (apiError) {
+      console.log('⚠️ External API failed, using mock response:', apiError.message);
+      // Mock response when external API fails
       response = {
         level: 'Medium',
         drivers: ['Academic workload', 'Time management', 'Social pressures'],
@@ -243,12 +259,21 @@ app.post('/ai/genieguide', authenticateToken, async (req, res) => {
     const { courseInfo, weeklyHours } = req.body;
     let response;
 
-    if (puterClient.isAvailable()) {
-      const prompt = `Create a study roadmap. Return JSON with: roadmap (array of week objects with week number, topics, activities), mindmap (string describing connections between topics).\n\nCreate roadmap for: ${courseInfo}, ${weeklyHours} hours/week`;
-      
-      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
-      response = JSON.parse(puterResponse.message.content);
-    } else {
+    // Try external API first, fallback to mock on failure
+    try {
+      if (puterClient.isAvailable()) {
+        console.log('🤖 Attempting Puter.js API call for GenieGuide...');
+        const prompt = `Create a study roadmap. Return JSON with: roadmap (array of week objects with week number, topics, activities), mindmap (string describing connections between topics).\n\nCreate roadmap for: ${courseInfo}, ${weeklyHours} hours/week`;
+        
+        const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+        response = JSON.parse(puterResponse.message.content);
+        console.log('✅ Puter.js API call successful');
+      } else {
+        throw new Error('Puter.js not available');
+      }
+    } catch (apiError) {
+      console.log('⚠️ External API failed, using mock response:', apiError.message);
+      // Mock response when external API fails
       response = {
         roadmap: [
           { week: 1, topics: ['Course Overview', 'Basic Concepts'], activities: ['Read chapters 1-2', 'Complete intro quiz'] },
@@ -274,16 +299,25 @@ app.post('/ai/chat', authenticateToken, async (req, res) => {
     const historyContext = await getUserHistoryContext(req.user.userId);
     let response;
 
-    if (puterClient.isAvailable()) {
-      const contextMessage = historyContext.length > 0 
-        ? `User's recent activity: ${JSON.stringify(historyContext.slice(0, 3))}`
-        : 'No recent activity available.';
+    // Try external API first, fallback to mock on failure
+    try {
+      if (puterClient.isAvailable()) {
+        console.log('🤖 Attempting Puter.js API call for NOVA chat...');
+        const contextMessage = historyContext.length > 0 
+          ? `User's recent activity: ${JSON.stringify(historyContext.slice(0, 3))}`
+          : 'No recent activity available.';
 
-      const prompt = `You are NOVA, a helpful study assistant. Provide educational support and study guidance. ${contextMessage}\n\nUser question: ${message}`;
-      
-      const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
-      response = { answer: puterResponse.message.content };
-    } else {
+        const prompt = `You are NOVA, a helpful study assistant. Provide educational support and study guidance. ${contextMessage}\n\nUser question: ${message}`;
+        
+        const puterResponse = await puterClient.chat(prompt, { temperature: 0.7 });
+        response = { answer: puterResponse.message.content };
+        console.log('✅ Puter.js API call successful');
+      } else {
+        throw new Error('Puter.js not available');
+      }
+    } catch (apiError) {
+      console.log('⚠️ External API failed, using mock response:', apiError.message);
+      // Mock response when external API fails
       response = {
         answer: `Thanks for your question about "${message}". As your study assistant NOVA, I'd recommend breaking this topic down into smaller parts and creating a study plan. Consider using active recall techniques and spaced repetition for better retention.`
       };
@@ -302,15 +336,24 @@ app.post('/ai/support', authenticateToken, async (req, res) => {
     const { message } = req.body;
     let response;
 
-    if (puterClient.isAvailable()) {
-      const prompt = `You are a supportive educational coach. Provide empathetic, encouraging responses. Always include a disclaimer that this is educational support, not medical care.\n\nUser message: ${message}`;
-      
-      const puterResponse = await puterClient.chat(prompt, { temperature: 0.8 });
-      response = {
-        response: puterResponse.message.content,
-        disclaimer: 'This is a supportive educational tool, not medical care. If you are in crisis, please seek local emergency help or contact a mental health professional.'
-      };
-    } else {
+    // Try external API first, fallback to mock on failure
+    try {
+      if (puterClient.isAvailable()) {
+        console.log('🤖 Attempting Puter.js API call for support coach...');
+        const prompt = `You are a supportive educational coach. Provide empathetic, encouraging responses. Always include a disclaimer that this is educational support, not medical care.\n\nUser message: ${message}`;
+        
+        const puterResponse = await puterClient.chat(prompt, { temperature: 0.8 });
+        response = {
+          response: puterResponse.message.content,
+          disclaimer: 'This is a supportive educational tool, not medical care. If you are in crisis, please seek local emergency help or contact a mental health professional.'
+        };
+        console.log('✅ Puter.js API call successful');
+      } else {
+        throw new Error('Puter.js not available');
+      }
+    } catch (apiError) {
+      console.log('⚠️ External API failed, using mock response:', apiError.message);
+      // Mock response when external API fails
       response = {
         response: `I hear you, and I want you to know that what you're feeling is valid. Academic challenges can be overwhelming, but remember that seeking support shows strength. Take things one step at a time, and be kind to yourself. You've got this!`,
         disclaimer: 'This is a supportive educational tool, not medical care. If you are in crisis, please seek local emergency help or contact a mental health professional.'
@@ -333,20 +376,29 @@ app.post('/ai/image-analyze', upload.single('image'), authenticateToken, async (
 
     let response;
 
-    if (hasHuggingFace) {
-      const hfResponse = await axios.post(
-        'https://api-inference.huggingface.co/models/microsoft/resnet-50',
-        req.file.buffer,
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.HF_API_KEY}`,
-            'Content-Type': 'application/octet-stream'
+    // Try external API first, fallback to mock on failure
+    try {
+      if (hasHuggingFace) {
+        console.log('🤖 Attempting HuggingFace API call for image analysis...');
+        const hfResponse = await axios.post(
+          'https://api-inference.huggingface.co/models/microsoft/resnet-50',
+          req.file.buffer,
+          {
+            headers: {
+              'Authorization': `Bearer ${process.env.HF_API_KEY}`,
+              'Content-Type': 'application/octet-stream'
+            }
           }
-        }
-      );
+        );
 
-      response = { labels: hfResponse.data };
-    } else {
+        response = { labels: hfResponse.data };
+        console.log('✅ HuggingFace API call successful');
+      } else {
+        throw new Error('HuggingFace API key not available');
+      }
+    } catch (apiError) {
+      console.log('⚠️ External API failed, using mock response:', apiError.message);
+      // Mock response when external API fails
       response = {
         labels: [
           { label: 'book', score: 0.85 },
