@@ -53,7 +53,7 @@ puterClient.initialize().catch(err => {
 // JWT middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader?.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ error: 'Access token required' });
@@ -72,7 +72,7 @@ const authenticateToken = (req, res, next) => {
 const getUserHistoryContext = async (userId) => {
   try {
     const result = await pool.query(
-      'SELECT feature_name, prompt, response FROM history WHERE user_id = $1 ORDER BY created_at DESC LIMIT 10',
+      'SELECT id, feature_name, prompt, response, created_at FROM history WHERE user_id = $1 ORDER BY created_at DESC LIMIT 10',
       [userId]
     );
     return result.rows;
@@ -103,7 +103,7 @@ app.post('/auth/signup', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    // Check if user exists
+    // Check if user already exists
     const existingUser = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
     if (existingUser.rows.length > 0) {
       return res.status(400).json({ error: 'Username already exists' });
@@ -119,11 +119,7 @@ app.post('/auth/signup', async (req, res) => {
     const user = result.rows[0];
     const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET);
 
-    res.status(201).json({
-      message: 'User created successfully',
-      token,
-      user: { id: user.id, username: user.username }
-    });
+    res.status(201).json({ token, user: { id: user.id, username: user.username } });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -145,19 +141,16 @@ app.post('/auth/login', async (req, res) => {
     }
 
     const user = result.rows[0];
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
 
-    if (!isValidPassword) {
+    // Verify password
+    const validPassword = await bcrypt.compare(password, user.password_hash);
+    if (!validPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET);
 
-    res.json({
-      message: 'Login successful',
-      token,
-      user: { id: user.id, username: user.username }
-    });
+    res.json({ token, user: { id: user.id, username: user.username } });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
