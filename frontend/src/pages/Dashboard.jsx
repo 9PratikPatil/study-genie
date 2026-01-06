@@ -46,9 +46,9 @@ const Dashboard = ({ user }) => {
 
   return (
     <div>
-      <div className="card">
+      <div className="card welcome-card">
         <h1>Welcome back, {user.username}! 🎓</h1>
-        <p>Ready to continue your learning journey with StudyGenie?</p>
+        <p style={{ fontSize: '1.1rem', color: '#6b7280' }}>Ready to continue your learning journey with StudyGenie?</p>
       </div>
 
       <div className="card">
@@ -89,29 +89,29 @@ const Dashboard = ({ user }) => {
       </div>
 
       <div className="grid grid-3">
-        <div className="card">
+        <div className="feature-card">
           <h3>🧠 Study Style Quiz</h3>
-          <p>Discover your learning preferences</p>
+          <p>Discover your learning preferences and optimize your study approach</p>
         </div>
-        <div className="card">
+        <div className="feature-card">
           <h3>😰 Stress Check</h3>
-          <p>Monitor your stress levels</p>
+          <p>Monitor your stress levels and get personalized recommendations</p>
         </div>
-        <div className="card">
+        <div className="feature-card">
           <h3>🗺️ GenieGuide</h3>
-          <p>Get personalized study roadmaps</p>
+          <p>Get personalized study roadmaps tailored to your goals</p>
         </div>
-        <div className="card">
+        <div className="feature-card">
           <h3>💬 NOVA Chat</h3>
-          <p>AI study assistant</p>
+          <p>AI-powered study assistant for instant help and guidance</p>
         </div>
-        <div className="card">
+        <div className="feature-card">
           <h3>🤗 Support Coach</h3>
-          <p>Emotional support and guidance</p>
+          <p>Emotional support and mental wellness guidance</p>
         </div>
-        <div className="card">
+        <div className="feature-card">
           <h3>🧘 Rehab Tools</h3>
-          <p>Breathing exercises and journaling</p>
+          <p>Breathing exercises, journaling, and mindfulness practices</p>
         </div>
       </div>
     </div>

@@ -14,13 +14,20 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 const StressCheck = () => {
   const [formData, setFormData] = useState({
     sleepHours: '',
+    sleepQuality: '',
     workloadLevel: '',
     exerciseFrequency: '',
     socialSupport: '',
     financialConcerns: '',
     academicPressure: '',
     healthIssues: '',
-    timeManagement: ''
+    timeManagement: '',
+    procrastination: '',
+    examAnxiety: '',
+    workLifeBalance: '',
+    concentrationLevel: '',
+    moodChanges: '',
+    copingMechanisms: ''
   })
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -129,6 +136,25 @@ const StressCheck = () => {
               <option value="5-6">5-6 hours</option>
               <option value="7-8">7-8 hours</option>
               <option value="more-than-8">More than 8 hours</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="sleepQuality">Sleep quality</label>
+            <select
+              id="sleepQuality"
+              name="sleepQuality"
+              className="form-control"
+              value={formData.sleepQuality}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="very-poor">Very poor (frequent waking, restless)</option>
+              <option value="poor">Poor (some difficulty sleeping)</option>
+              <option value="fair">Fair (occasional sleep issues)</option>
+              <option value="good">Good (mostly restful sleep)</option>
+              <option value="excellent">Excellent (deep, uninterrupted sleep)</option>
             </select>
           </div>
 
@@ -255,6 +281,114 @@ const StressCheck = () => {
               <option value="fair">Fair</option>
               <option value="good">Good</option>
               <option value="excellent">Excellent</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="procrastination">Procrastination frequency</label>
+            <select
+              id="procrastination"
+              name="procrastination"
+              className="form-control"
+              value={formData.procrastination}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="never">Never or rarely</option>
+              <option value="sometimes">Sometimes (1-2 times/week)</option>
+              <option value="often">Often (3-4 times/week)</option>
+              <option value="daily">Daily or almost daily</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="examAnxiety">Test/exam anxiety level</label>
+            <select
+              id="examAnxiety"
+              name="examAnxiety"
+              className="form-control"
+              value={formData.examAnxiety}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="none">No anxiety</option>
+              <option value="mild">Mild nervousness</option>
+              <option value="moderate">Moderate anxiety</option>
+              <option value="severe">Severe anxiety (affects performance)</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="workLifeBalance">Work-life balance</label>
+            <select
+              id="workLifeBalance"
+              name="workLifeBalance"
+              className="form-control"
+              value={formData.workLifeBalance}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="excellent">Excellent balance</option>
+              <option value="good">Good balance</option>
+              <option value="poor">Poor balance</option>
+              <option value="none">No balance (all work/study)</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="concentrationLevel">Concentration and focus ability</label>
+            <select
+              id="concentrationLevel"
+              name="concentrationLevel"
+              className="form-control"
+              value={formData.concentrationLevel}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="excellent">Excellent (can focus for hours)</option>
+              <option value="good">Good (can focus for 1-2 hours)</option>
+              <option value="fair">Fair (can focus for 30-60 minutes)</option>
+              <option value="poor">Poor (difficulty focusing for 30+ minutes)</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="moodChanges">Mood changes and emotional stability</label>
+            <select
+              id="moodChanges"
+              name="moodChanges"
+              className="form-control"
+              value={formData.moodChanges}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="stable">Very stable mood</option>
+              <option value="minor">Minor mood fluctuations</option>
+              <option value="moderate">Moderate mood swings</option>
+              <option value="frequent">Frequent emotional ups and downs</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="copingMechanisms">Current coping strategies</label>
+            <select
+              id="copingMechanisms"
+              name="copingMechanisms"
+              className="form-control"
+              value={formData.copingMechanisms}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="healthy">Healthy strategies (exercise, meditation, hobbies)</option>
+              <option value="mixed">Mix of healthy and unhealthy strategies</option>
+              <option value="unhealthy">Mostly unhealthy strategies (avoidance, substances)</option>
+              <option value="none">No specific coping strategies</option>
             </select>
           </div>
         </div>

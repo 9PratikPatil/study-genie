@@ -18,7 +18,6 @@ import GenieGuide from './pages/GenieGuide'
 import NovaChat from './pages/NovaChat'
 import SupportCoach from './pages/SupportCoach'
 import Rehab from './pages/Rehab'
-import ImageAnalysis from './pages/ImageAnalysis'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -94,10 +93,6 @@ function App() {
               <Route 
                 path="/rehab" 
                 element={user ? <Rehab /> : <Navigate to="/login" />} 
-              />
-              <Route 
-                path="/image-analysis" 
-                element={user ? <ImageAnalysis /> : <Navigate to="/login" />} 
               />
               <Route 
                 path="/" 

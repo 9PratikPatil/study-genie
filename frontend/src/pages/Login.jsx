@@ -43,9 +43,19 @@ const Login = ({ onLogin }) => {
   }
 
   return (
-    <div className="card" style={{ maxWidth: '400px', margin: '2rem auto' }}>
-      <h2 className="text-center">Welcome to StudyGenie</h2>
-      <p className="text-center mb-3">Sign in to your account</p>
+    <div className="card" style={{ maxWidth: '420px', margin: '2rem auto', background: 'rgba(255, 255, 255, 0.98)' }}>
+      <div className="text-center mb-3">
+        <h2 style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          fontSize: '2rem',
+          fontWeight: '700',
+          marginBottom: '0.5rem'
+        }}>Welcome to StudyGenie</h2>
+        <p style={{ color: '#6b7280', fontSize: '1.1rem' }}>Sign in to your account</p>
+      </div>
       
       {error && <div className="error">{error}</div>}
       

@@ -136,7 +136,6 @@ StudyGenie/
             ├── NovaChat.jsx
             ├── SupportCoach.jsx
             ├── Rehab.jsx
-            └── ImageAnalysis.jsx
 ```
 
 ### Making Changes

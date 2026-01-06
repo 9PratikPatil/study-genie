@@ -68,6 +68,9 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+
+
+
 // Helper function to get user history context
 const getUserHistoryContext = async (userId) => {
   try {

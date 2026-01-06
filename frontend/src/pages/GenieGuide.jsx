@@ -14,7 +14,13 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 const GenieGuide = () => {
   const [formData, setFormData] = useState({
     courseInfo: '',
-    weeklyHours: ''
+    weeklyHours: '',
+    currentLevel: '',
+    learningGoals: '',
+    timeframe: '',
+    studyPreference: '',
+    priorKnowledge: '',
+    challengeAreas: ''
   })
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -98,7 +104,19 @@ const GenieGuide = () => {
           </div>
           
           <button 
-            onClick={() => { setResult(null); setFormData({ courseInfo: '', weeklyHours: '' }); }} 
+            onClick={() => { 
+              setResult(null); 
+              setFormData({ 
+                courseInfo: '', 
+                weeklyHours: '', 
+                currentLevel: '', 
+                learningGoals: '', 
+                timeframe: '', 
+                studyPreference: '', 
+                priorKnowledge: '', 
+                challengeAreas: '' 
+              }); 
+            }} 
             className="btn btn-secondary mt-3"
           >
             Create New Roadmap
@@ -116,37 +134,134 @@ const GenieGuide = () => {
       {error && <div className="error">{error}</div>}
       
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="courseInfo">Course Information</label>
-          <textarea
-            id="courseInfo"
-            name="courseInfo"
-            className="form-control textarea"
-            value={formData.courseInfo}
-            onChange={handleChange}
-            placeholder="Describe your course, subject, or topic you want to study. Include any specific areas you want to focus on, difficulty level, or learning objectives..."
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="weeklyHours">Weekly Study Hours</label>
-          <select
-            id="weeklyHours"
-            name="weeklyHours"
-            className="form-control"
-            value={formData.weeklyHours}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select weekly hours...</option>
-            <option value="1-3">1-3 hours per week</option>
-            <option value="4-6">4-6 hours per week</option>
-            <option value="7-10">7-10 hours per week</option>
-            <option value="11-15">11-15 hours per week</option>
-            <option value="16-20">16-20 hours per week</option>
-            <option value="20+">More than 20 hours per week</option>
-          </select>
+        <div className="grid grid-2">
+          <div className="form-group">
+            <label htmlFor="courseInfo">Course/Subject Information</label>
+            <textarea
+              id="courseInfo"
+              name="courseInfo"
+              className="form-control textarea"
+              value={formData.courseInfo}
+              onChange={handleChange}
+              placeholder="Describe your course, subject, or topic (e.g., 'Introduction to Python Programming', 'Advanced Calculus', 'World History 1900-2000')..."
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="learningGoals">Specific Learning Goals</label>
+            <textarea
+              id="learningGoals"
+              name="learningGoals"
+              className="form-control textarea"
+              value={formData.learningGoals}
+              onChange={handleChange}
+              placeholder="What do you want to achieve? (e.g., 'Pass final exam with 85%+', 'Build a web application', 'Understand key historical events')..."
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="currentLevel">Current Knowledge Level</label>
+            <select
+              id="currentLevel"
+              name="currentLevel"
+              className="form-control"
+              value={formData.currentLevel}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select your level...</option>
+              <option value="complete-beginner">Complete Beginner</option>
+              <option value="some-basics">Know Some Basics</option>
+              <option value="intermediate">Intermediate Level</option>
+              <option value="advanced">Advanced Level</option>
+              <option value="expert-review">Expert (Just Reviewing)</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="timeframe">Target Completion Time</label>
+            <select
+              id="timeframe"
+              name="timeframe"
+              className="form-control"
+              value={formData.timeframe}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select timeframe...</option>
+              <option value="2-weeks">2 weeks</option>
+              <option value="1-month">1 month</option>
+              <option value="2-months">2 months</option>
+              <option value="3-months">3 months</option>
+              <option value="6-months">6 months</option>
+              <option value="1-year">1 year or more</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="weeklyHours">Weekly Study Hours Available</label>
+            <select
+              id="weeklyHours"
+              name="weeklyHours"
+              className="form-control"
+              value={formData.weeklyHours}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select weekly hours...</option>
+              <option value="1-3">1-3 hours per week</option>
+              <option value="4-6">4-6 hours per week</option>
+              <option value="7-10">7-10 hours per week</option>
+              <option value="11-15">11-15 hours per week</option>
+              <option value="16-20">16-20 hours per week</option>
+              <option value="20+">More than 20 hours per week</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="studyPreference">Preferred Study Method</label>
+            <select
+              id="studyPreference"
+              name="studyPreference"
+              className="form-control"
+              value={formData.studyPreference}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select preference...</option>
+              <option value="reading-notes">Reading & Note-taking</option>
+              <option value="video-tutorials">Video Tutorials</option>
+              <option value="hands-on-practice">Hands-on Practice</option>
+              <option value="group-discussion">Group Discussion</option>
+              <option value="mixed-approach">Mixed Approach</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="priorKnowledge">Related Knowledge/Experience</label>
+            <textarea
+              id="priorKnowledge"
+              name="priorKnowledge"
+              className="form-control textarea"
+              value={formData.priorKnowledge}
+              onChange={handleChange}
+              placeholder="Any related courses, skills, or experience you have that might help? (Optional)"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="challengeAreas">Expected Challenge Areas</label>
+            <textarea
+              id="challengeAreas"
+              name="challengeAreas"
+              className="form-control textarea"
+              value={formData.challengeAreas}
+              onChange={handleChange}
+              placeholder="What topics or skills do you expect to find most challenging? (Optional)"
+            />
+          </div>
         </div>
         
         <button 

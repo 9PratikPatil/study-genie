@@ -13,6 +13,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 const SupportCoach = () => {
   const [message, setMessage] = useState('')
+  const [category, setCategory] = useState('')
+  const [urgency, setUrgency] = useState('')
   const [response, setResponse] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -27,11 +29,17 @@ const SupportCoach = () => {
     try {
       const token = localStorage.getItem('token')
       const result = await axios.post(`${API_URL}/ai/support`, 
-        { message: message.trim() },
+        { 
+          message: message.trim(),
+          category: category,
+          urgency: urgency
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       )
       setResponse(result.data)
       setMessage('')
+      setCategory('')
+      setUrgency('')
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to get support response')
     } finally {
@@ -63,25 +71,84 @@ const SupportCoach = () => {
         {error && <div className="error">{error}</div>}
         
         <form onSubmit={handleSubmit}>
+          <div className="grid grid-2">
+            <div className="form-group">
+              <label htmlFor="category">What area would you like support with?</label>
+              <select
+                id="category"
+                name="category"
+                className="form-control"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              >
+                <option value="">Select a category...</option>
+                <option value="academic-stress">Academic Stress & Pressure</option>
+                <option value="exam-anxiety">Test/Exam Anxiety</option>
+                <option value="time-management">Time Management & Procrastination</option>
+                <option value="motivation">Lack of Motivation</option>
+                <option value="social-issues">Social & Relationship Issues</option>
+                <option value="self-esteem">Self-Esteem & Confidence</option>
+                <option value="life-balance">Work-Life Balance</option>
+                <option value="future-concerns">Future & Career Concerns</option>
+                <option value="family-pressure">Family Expectations & Pressure</option>
+                <option value="general-support">General Emotional Support</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="urgency">How urgent is this concern?</label>
+              <select
+                id="urgency"
+                name="urgency"
+                className="form-control"
+                value={urgency}
+                onChange={(e) => setUrgency(e.target.value)}
+                required
+              >
+                <option value="">Select urgency level...</option>
+                <option value="low">Low - General guidance needed</option>
+                <option value="medium">Medium - Affecting daily activities</option>
+                <option value="high">High - Significantly impacting well-being</option>
+                <option value="crisis">Crisis - Need immediate support resources</option>
+              </select>
+            </div>
+          </div>
+          
           <div className="form-group">
-            <label htmlFor="message">What would you like to talk about?</label>
+            <label htmlFor="message">Tell me more about your situation</label>
             <textarea
               id="message"
               className="form-control textarea"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Share your thoughts, concerns, or challenges. I'm here to listen and provide supportive guidance..."
+              placeholder="Share your thoughts, feelings, and specific challenges. The more details you provide, the better I can support you. Remember, this is a safe space to express yourself..."
               required
-              style={{ minHeight: '120px' }}
+              style={{ minHeight: '150px' }}
             />
+          </div>
+          
+          <div style={{
+            background: '#f0f9ff',
+            border: '1px solid #0ea5e9',
+            borderRadius: '8px',
+            padding: '1rem',
+            marginBottom: '1rem',
+            color: '#0c4a6e'
+          }}>
+            <h4 style={{ margin: '0 0 0.5rem 0', color: '#0c4a6e' }}>💡 Helpful Prompts</h4>
+            <p style={{ margin: 0, fontSize: '0.9rem' }}>
+              Consider sharing: What triggered this feeling? How long has this been affecting you? 
+              What have you tried so far? What would feeling better look like to you?
+            </p>
           </div>
           
           <button 
             type="submit" 
             className="btn btn-primary"
-            disabled={loading || !message.trim()}
+            disabled={loading || !message.trim() || !category || !urgency}
           >
-            {loading ? 'Getting Support...' : 'Get Support'}
+            {loading ? 'Getting Support...' : 'Get Support & Guidance'}
           </button>
         </form>
       </div>
@@ -110,10 +177,15 @@ const SupportCoach = () => {
           </div>
           
           <button 
-            onClick={() => setResponse(null)} 
+            onClick={() => {
+              setResponse(null)
+              setMessage('')
+              setCategory('')
+              setUrgency('')
+            }} 
             className="btn btn-secondary mt-2"
           >
-            Ask Another Question
+            Get More Support
           </button>
         </div>
       )}
