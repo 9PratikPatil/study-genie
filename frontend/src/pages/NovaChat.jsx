@@ -45,7 +45,7 @@ const NovaChat = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       
-      setMessages(prev => [...prev, { role: 'assistant', content: response.data.answer }])
+      setMessages(prev => [...prev, { role: 'assistant', content: response.data.response }])
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to get response')
       setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }])

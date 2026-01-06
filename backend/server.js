@@ -229,31 +229,6 @@ app.post('/ai/support', authenticateToken, async (req, res) => {
   }
 });
 
-app.post('/ai/image-analyze', upload.single('image'), authenticateToken, async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No image file provided' });
-    }
-
-    const response = await axios.post(
-      'https://api-inference.huggingface.co/models/microsoft/resnet-50',
-      req.file.buffer,
-      {
-        headers: {
-          'Authorization': `Bearer ${process.env.HF_API_KEY}`,
-          'Content-Type': 'application/octet-stream'
-        }
-      }
-    );
-
-    await saveHistory(req.user.userId, 'image-analyze', { filename: req.file.originalname }, response.data);
-    res.json(response.data);
-  } catch (error) {
-    console.error('Image analysis error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

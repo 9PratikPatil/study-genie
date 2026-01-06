@@ -28,7 +28,7 @@ class OpenRouterClient {
     return this.available;
   }
 
-  async generateResponse(prompt, model = 'openai/gpt-3.5-turbo') {
+  async generateResponse(prompt, model = 'xiaomi/mimo-v2-flash:free') {
     if (!this.isAvailable()) {
       throw new Error('OpenRouter client not available');
     }
@@ -72,7 +72,7 @@ Please provide a JSON response with:
 Focus on practical, actionable advice for effective studying.`;
 
     try {
-      const response = await this.generateResponse(prompt, 'openai/gpt-3.5-turbo');
+      const response = await this.generateResponse(prompt, 'xiaomi/mimo-v2-flash:free');
       return JSON.parse(response);
     } catch (error) {
       console.error('Study style analysis error:', error);
@@ -106,7 +106,7 @@ Please provide a JSON response with:
 Focus on practical, evidence-based stress reduction strategies.`;
 
     try {
-      const response = await this.generateResponse(prompt, 'openai/gpt-3.5-turbo');
+      const response = await this.generateResponse(prompt, 'xiaomi/mimo-v2-flash:free');
       return JSON.parse(response);
     } catch (error) {
       console.error('Stress analysis error:', error);
@@ -133,29 +133,39 @@ Course Information: ${JSON.stringify(courseInfo)}
 Weekly Study Hours: ${weeklyHours}
 
 Please provide a JSON response with:
-1. timeline: Study timeline with milestones
-2. weeklyPlan: Detailed weekly study plan
-3. resources: Recommended study resources
-4. tips: Specific tips for this course/subject
+1. roadmap: Array of week objects, each with:
+   - week: Week number (1, 2, 3, etc.)
+   - topics: Array of topics to cover that week
+   - activities: Array of specific activities/exercises for that week
+2. mindmap: String describing the connections between topics and overall course structure
 
-Focus on creating a realistic, achievable study plan.`;
+Focus on creating a realistic, achievable weekly study plan with specific actionable items.`;
 
     try {
-      const response = await this.generateResponse(prompt, 'openai/gpt-3.5-turbo');
+      const response = await this.generateResponse(prompt, 'xiaomi/mimo-v2-flash:free');
       return JSON.parse(response);
     } catch (error) {
       console.error('Roadmap generation error:', error);
       // Fallback response
       return {
-        timeline: 'Structured 12-week study plan',
-        weeklyPlan: 'Balanced approach with theory and practice',
-        resources: ['Textbooks', 'Online courses', 'Practice exercises'],
-        tips: [
-          'Start with fundamentals',
-          'Practice regularly',
-          'Review weekly progress',
-          'Seek help when needed'
-        ]
+        roadmap: [
+          {
+            week: 1,
+            topics: ['Course Introduction', 'Basic Concepts', 'Terminology'],
+            activities: ['Read introductory materials', 'Complete vocabulary exercises', 'Take initial assessment']
+          },
+          {
+            week: 2,
+            topics: ['Fundamental Principles', 'Core Theory'],
+            activities: ['Study core concepts', 'Practice basic exercises', 'Join study group']
+          },
+          {
+            week: 3,
+            topics: ['Applied Knowledge', 'Practical Examples'],
+            activities: ['Work on practice problems', 'Complete assignments', 'Review progress']
+          }
+        ],
+        mindmap: 'The course structure flows from foundational concepts in weeks 1-2, building to applied knowledge in week 3 and beyond. Core principles connect to practical applications, with regular assessment and review cycles to reinforce learning.'
       };
     }
   }
@@ -174,7 +184,7 @@ User question: ${message}
 Provide a helpful, encouraging response focused on study assistance, learning strategies, and academic support.`;
 
     try {
-      const response = await this.generateResponse(prompt, 'openai/gpt-3.5-turbo');
+      const response = await this.generateResponse(prompt, 'xiaomi/mimo-v2-flash:free');
       return { response };
     } catch (error) {
       console.error('Chat response error:', error);
@@ -199,7 +209,7 @@ Provide a compassionate, helpful response that:
 Keep the tone warm, understanding, and professionally supportive.`;
 
     try {
-      const response = await this.generateResponse(prompt, 'openai/gpt-3.5-turbo');
+      const response = await this.generateResponse(prompt, 'xiaomi/mimo-v2-flash:free');
       return { response };
     } catch (error) {
       console.error('Support response error:', error);
