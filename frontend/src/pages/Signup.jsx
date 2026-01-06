@@ -53,65 +53,157 @@ const Signup = ({ onLogin }) => {
   }
 
   return (
-    <div className="card" style={{ maxWidth: '400px', margin: '2rem auto' }}>
-      <h2 className="text-center">Join StudyGenie</h2>
-      <p className="text-center mb-3">Create your account</p>
+    <div style={{ 
+      minHeight: '100vh', 
+      background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      padding: '2rem'
+    }}>
+      <div className="card" style={{ 
+        maxWidth: '600px', 
+        width: '100%',
+        margin: '0 auto', 
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderRadius: '24px',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.9)',
+        border: 'none',
+        padding: '4rem'
+      }}>
+        <div className="text-center mb-4">
+          <h1 style={{ 
+            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontSize: '3rem',
+            fontWeight: '800',
+            marginBottom: '1rem',
+            letterSpacing: '-0.025em'
+          }}>Join StudyGenie</h1>
+          <p style={{ color: '#64748b', fontSize: '1.3rem', fontWeight: '400', lineHeight: '1.6' }}>Create your account and start your learning journey</p>
+        </div>
       
       {error && <div className="error">{error}</div>}
       
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            className="form-control"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            className="form-control"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            className="form-control"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <button 
-          type="submit" 
-          className="btn btn-primary" 
-          style={{ width: '100%' }}
-          disabled={loading}
-        >
-          {loading ? 'Creating Account...' : 'Sign Up'}
-        </button>
-      </form>
+        <form onSubmit={handleSubmit} style={{ marginTop: '3rem' }}>
+          <div className="form-group" style={{ marginBottom: '2rem' }}>
+            <label htmlFor="username" style={{ 
+              fontSize: '1.1rem', 
+              fontWeight: '600', 
+              color: '#0f172a',
+              marginBottom: '0.75rem',
+              display: 'block'
+            }}>Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              className="form-control"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              style={{
+                padding: '1rem 1.25rem',
+                fontSize: '1.1rem',
+                borderRadius: '12px',
+                border: '2px solid #e2e8f0',
+                background: 'rgba(255, 255, 255, 0.8)',
+                transition: 'all 0.3s ease',
+                width: '100%'
+              }}
+            />
+          </div>
+          
+          <div className="form-group" style={{ marginBottom: '2rem' }}>
+            <label htmlFor="password" style={{ 
+              fontSize: '1.1rem', 
+              fontWeight: '600', 
+              color: '#0f172a',
+              marginBottom: '0.75rem',
+              display: 'block'
+            }}>Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              className="form-control"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              style={{
+                padding: '1rem 1.25rem',
+                fontSize: '1.1rem',
+                borderRadius: '12px',
+                border: '2px solid #e2e8f0',
+                background: 'rgba(255, 255, 255, 0.8)',
+                transition: 'all 0.3s ease',
+                width: '100%'
+              }}
+            />
+          </div>
+          
+          <div className="form-group" style={{ marginBottom: '2.5rem' }}>
+            <label htmlFor="confirmPassword" style={{ 
+              fontSize: '1.1rem', 
+              fontWeight: '600', 
+              color: '#0f172a',
+              marginBottom: '0.75rem',
+              display: 'block'
+            }}>Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              className="form-control"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              style={{
+                padding: '1rem 1.25rem',
+                fontSize: '1.1rem',
+                borderRadius: '12px',
+                border: '2px solid #e2e8f0',
+                background: 'rgba(255, 255, 255, 0.8)',
+                transition: 'all 0.3s ease',
+                width: '100%'
+              }}
+            />
+          </div>
+          
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
+            style={{ 
+              width: '100%',
+              padding: '1.25rem 2rem',
+              fontSize: '1.2rem',
+              fontWeight: '700',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              border: 'none',
+              boxShadow: '0 10px 25px rgba(99, 102, 241, 0.3)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}
+            disabled={loading}
+          >
+            {loading ? 'Creating Account...' : 'Sign Up'}
+          </button>
+        </form>
       
-      <p className="text-center mt-3">
-        Already have an account? <Link to="/login">Sign in</Link>
-      </p>
+        <p className="text-center" style={{ marginTop: '2rem', fontSize: '1.1rem', color: '#64748b' }}>
+          Already have an account? <Link to="/login" style={{ 
+            color: '#6366f1', 
+            textDecoration: 'none', 
+            fontWeight: '600',
+            transition: 'color 0.3s ease'
+          }}>Sign in</Link>
+        </p>
+      </div>
     </div>
   )
 }
