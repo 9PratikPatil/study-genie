@@ -15,6 +15,7 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const axios = require('axios');
 const OpenRouterClient = require('./openRouterClient');
+const GeminiClient = require('./geminiClient');
 require('dotenv').config();
 
 const app = express();
@@ -39,6 +40,7 @@ const upload = multer({
 
 // Initialize OpenRouter client
 const openRouterClient = new OpenRouterClient();
+const geminiClient = new GeminiClient();
 
 // JWT middleware
 const authenticateToken = (req, res, next) => {
@@ -207,7 +209,7 @@ app.post('/ai/chat', authenticateToken, async (req, res) => {
     const { message } = req.body;
     const historyContext = await getUserHistoryContext(req.user.userId);
     
-    const response = await openRouterClient.provideChatResponse(message, historyContext);
+    const response = await geminiClient.provideChatResponse(message, historyContext);
     await saveHistory(req.user.userId, 'chat', { message }, response);
     res.json(response);
   } catch (error) {
@@ -239,5 +241,6 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 StudyGenie Backend running on port ${PORT}`);
   console.log(`📊 Database: ${process.env.DATABASE_URL ? 'Connected' : 'Not configured'}`);
   console.log(`🤖 OpenRouter: ${openRouterClient.isAvailable() ? 'Enabled' : 'Mock mode'}`);
+  console.log(`🧠 Gemini AI: ${process.env.GEMINI_API_KEY ? 'Enabled for NOVA Chat' : 'Not configured'}`);
   console.log(`🖼️  HuggingFace: ${process.env.HF_API_KEY ? 'Enabled' : 'Mock mode'}`);
 });
